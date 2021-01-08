@@ -1,7 +1,8 @@
 <template>
 <div class="popover">
     <el-popover
-        placement="bottom"
+        placement="bottom-start"
+        popper-class="monthDays_popper"
         v-model="visible">
         <el-card class="box-card">
            <div slot="header" class="box-header">
@@ -26,8 +27,9 @@
         <el-input 
             class="mouth-days-value"
             slot="reference"
-            placeholder="请选择日期"
-            suffix-icon="el-icon-date"
+            placeholder="选择日期"
+            clearable
+            prefix-icon="el-icon-date"
             v-model="monthDaysValue">
         </el-input>
         
@@ -73,11 +75,20 @@ export default {
       }
   },
   mounted(){
-    this.monthDaysValue = this.value
     let date = new Date();
     this.nowMonth = date.getMonth() + 1;
     this.nowDay = date.getDate();
     this.getNowMonth();
+    if (this.value) {
+        const dataArr = this.value.split('-')
+        this.monthDaysValue = this.value
+        this.nowDay = dataArr[1]
+        dataSelect.month.forEach(item => {
+            if (dataArr[0] === item.arab) {
+                this.nowMonth = item.option
+            }
+        })
+    }
   },
   methods:{
     getmonthesArab(){
@@ -162,19 +173,21 @@ export default {
 </style>
 <style  scoped>
   .box-card {
-    width: 300px
+    width: 320px;
   }
   .mouth-days-value {
-      width: 200px;
+      width: 220px;
   }
   .box-header{
       text-align: center;
       display: flex;
       justify-content: space-between;
+      cursor: pointer;
   }
   .show{
       display: flex;
       flex-wrap: wrap;
+      cursor: pointer;
   }
   .monthes{
       width: 25%;
@@ -188,6 +201,7 @@ export default {
       margin-top: 2%;
       margin-bottom: 2%;
       margin-left: 1%;
+      cursor: pointer;
   }
   .active{
       color:#409EFF;
