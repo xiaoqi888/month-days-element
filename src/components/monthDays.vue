@@ -3,7 +3,8 @@
     <el-popover
         placement="bottom-start"
         popper-class="monthDays_popper"
-        v-model="visible">
+        v-model="visible"
+        @show="openDialog">
         <el-card class="box-card">
            <div slot="header" class="box-header">
                  <div class="el-icon-arrow-left" @click="upMonth"></div>
@@ -75,22 +76,42 @@ export default {
       }
   },
   mounted(){
-    let date = new Date();
-    this.nowMonth = date.getMonth() + 1;
-    this.nowDay = date.getDate();
-    this.getNowMonth();
-    if (this.value) {
-        const dataArr = this.value.split('-')
-        this.monthDaysValue = this.value
-        this.nowDay = dataArr[1]
-        dataSelect.month.forEach(item => {
-            if (dataArr[0] === item.arab) {
-                this.nowMonth = item.option
-            }
-        })
-    }
+    this.init()
   },
   methods:{
+    openDialog () {
+        if (this.monthDaysValue) {
+            const dataArr = this.monthDaysValue.split('-')
+            this.nowDay = dataArr[1]
+            dataSelect.month.forEach(item => {
+                if (dataArr[0][0] === '0') {
+                    dataArr[0] = dataArr[0].substr(1);
+                }
+                if (dataArr[0] === item.arab) {
+                    this.nowMonth = item.option
+                    this.nowMonthArab = dataArr[0]
+                }
+            })
+        } else {
+            this.init()
+        }
+    },
+    init () {
+        let date = new Date();
+        this.nowMonth = date.getMonth() + 1;
+        this.nowDay = date.getDate();
+        this.getNowMonth();
+        if (this.value) {
+            const dataArr = this.value.split('-')
+            this.monthDaysValue = this.value
+            this.nowDay = dataArr[1]
+            dataSelect.month.forEach(item => {
+                if (dataArr[0] === item.arab) {
+                    this.nowMonth = item.option
+                }
+            })
+        }
+    },
     getmonthesArab(){
         this.monthes = [];
         for (let index = 0; index < dataSelect.month.length; index++) {
@@ -202,6 +223,9 @@ export default {
       margin-bottom: 2%;
       margin-left: 1%;
       cursor: pointer;
+  }
+  .days span {
+      display: block;
   }
   .active{
       color:#409EFF;
