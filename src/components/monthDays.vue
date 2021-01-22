@@ -31,7 +31,9 @@
             placeholder="选择日期"
             clearable
             prefix-icon="el-icon-date"
-            v-model="monthDaysValue">
+            v-model="monthDaysValue"
+            @clear="clearClick"
+        >
         </el-input>
         
     </el-popover>
@@ -75,18 +77,30 @@ export default {
         }
       }
   },
+  created () {
+    this.monthDaysValue = this.value
+  },
   mounted(){
     this.init()
   },
   methods:{
+    clearClick () {
+        this.monthDaysValue = ''
+        this.nowMonth = ''
+        this.nowDay = ''
+        this.$emit('getValue',this.monthDaysValue)
+    },
     openDialog () {
         if (this.monthDaysValue) {
             const dataArr = this.monthDaysValue.split('-')
+            if (dataArr[0][0] === '0') {
+                dataArr[0] = dataArr[0].substr(1)
+            }
+            if (dataArr[1][0] === '0') {
+                dataArr[1] = dataArr[1].substr(1);
+            }
             this.nowDay = dataArr[1]
             dataSelect.month.forEach(item => {
-                if (dataArr[0][0] === '0') {
-                    dataArr[0] = dataArr[0].substr(1);
-                }
                 if (dataArr[0] === item.arab) {
                     this.nowMonth = item.option
                     this.nowMonthArab = dataArr[0]
@@ -101,9 +115,8 @@ export default {
         this.nowMonth = date.getMonth() + 1;
         this.nowDay = date.getDate();
         this.getNowMonth();
-        if (this.value) {
-            const dataArr = this.value.split('-')
-            this.monthDaysValue = this.value
+        if (this.monthDaysValue) {
+            const dataArr = this.monthDaysValue.split('-')
             this.nowDay = dataArr[1]
             dataSelect.month.forEach(item => {
                 if (dataArr[0] === item.arab) {
