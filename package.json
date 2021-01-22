@@ -1,6 +1,6 @@
 {
   "name": "month-days-element",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A vue component that selects the month and day based on element",
   "main": "dist/monthDays.js",
   "scripts": {
