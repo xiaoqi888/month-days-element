@@ -3,6 +3,7 @@
     <el-popover
         placement="bottom-start"
         popper-class="monthDays_popper"
+        :popper-class="monthDaysOptions.popperClass"
         v-model="visible"
         @show="openDialog">
         <el-card class="box-card">
@@ -28,14 +29,16 @@
         <el-input 
             class="mouth-days-value"
             slot="reference"
-            placeholder="选择日期"
-            clearable
             prefix-icon="el-icon-date"
             v-model="monthDaysValue"
+            :placeholder="monthDaysOptions.placeholder"
+            :size="monthDaysOptions.size"
+            :clearable="monthDaysOptions.clearable"
+            :disabled="monthDaysOptions.disabled"
+            :readonly="monthDaysOptions.readonly"
             @clear="clearClick"
         >
         </el-input>
-        
     </el-popover>
 </div>
 </template>
@@ -44,7 +47,20 @@
 import dataSelect from './dataSelect.json'
 export default {
   props: {
-    value: String
+    value: String,
+    monthDaysOptions: {
+        type: Object,
+        default() {
+            return {
+                placeholder: '选择日期',
+                size: 'large',
+				clearable: true,
+				disabled: false,
+				readonly: false,
+				popperClass: ''
+            }
+        }
+    }
   },
   data(){
       return{
@@ -91,6 +107,7 @@ export default {
         this.$emit('getValue',this.monthDaysValue)
     },
     openDialog () {
+        if (this.monthDaysOptions.disabled || this.monthDaysOptions.readonly) return this.visible = false
         if (this.monthDaysValue) {
             const dataArr = this.monthDaysValue.split('-')
             if (dataArr[0][0] === '0') {
